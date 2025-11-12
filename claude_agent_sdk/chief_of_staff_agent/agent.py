@@ -10,7 +10,14 @@ from typing import Any, Literal
 
 from dotenv import load_dotenv
 
-from claude_agent_sdk import AssistantMessage, ClaudeAgentOptions, ClaudeSDKClient, ResultMessage, UserMessage
+from claude_agent_sdk import (
+    AssistantMessage,
+    ClaudeAgentOptions,
+    ClaudeSDKClient,
+    ResultMessage,
+    ToolUseBlock,
+    UserMessage,
+)
 
 load_dotenv()
 
@@ -19,10 +26,9 @@ def get_activity_text(msg) -> str | None:
     """Extract activity text from a message"""
     try:
         if isinstance(msg, AssistantMessage):
-            if hasattr(msg, "content") and msg.content:
-                first_content = msg.content[0] if isinstance(msg.content, list) else msg.content
-                if hasattr(first_content, "name"):
-                    return f"🤖 Using: {first_content.name}()"
+            first_content = msg.content[0] if isinstance(msg.content, list) else msg.content
+            if isinstance(first_content, ToolUseBlock):
+                return f"🤖 Using: {first_content.name}()"
             return "🤖 Thinking..."
         elif isinstance(msg, UserMessage):
             return "✓ Tool completed"
