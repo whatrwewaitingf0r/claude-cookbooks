@@ -61,14 +61,16 @@ def show_diff(keys: list, sorted_keys: list):
         print(f"  {k}")
 
     print("\nOut of place entries:")
-    for i, (current, expected) in enumerate(zip(keys, sorted_keys)):
+    for i, (current, expected) in enumerate(zip(keys, sorted_keys, strict=False)):
         if current != expected:
             print(f"  Position {i}: got '{current}', expected '{expected}'")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Validate or fix authors.yaml sorting")
-    parser.add_argument("--fix", action="store_true", help="Sort the file instead of just validating")
+    parser.add_argument(
+        "--fix", action="store_true", help="Sort the file instead of just validating"
+    )
     args = parser.parse_args()
 
     data = load_authors()
